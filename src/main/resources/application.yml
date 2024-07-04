@@ -1,0 +1,21 @@
+spring:
+  data:
+    mongodb:
+      host: localhost
+      port: 27017
+      database: healthlifting-ddbb
+      #username: user
+      #password: pass
+
+de:
+  flapdoodle:
+    mongodb:
+      embedded:
+        version: 7.0.0
+
+logging:
+  level:
+    root: DEBUG
+    kafka: OFF
+    org.apache: ERROR
+    org.springframework: ERROR
