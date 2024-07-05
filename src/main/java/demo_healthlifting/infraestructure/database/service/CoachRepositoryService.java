@@ -80,4 +80,12 @@ public class CoachRepositoryService implements CoachRepositoryOutputPort {
 		Optional<CoachEntity> coachEntity = coachRepository.findByIdAndEliminate(id, false);
 		return coachToCoachEntityMapper.fromOutputToInput(coachEntity);
 	}
+
+	@Override
+	public Optional<Coach> findByPersonalInformationCoach(@Valid String document) {
+		log.debug("findByPersonalInformation");
+
+		Optional<CoachEntity> coachEntityOpt = coachRepository.findByPersonalInformationAndEliminate(document, false);
+		return coachToCoachEntityMapper.fromOutputToInput(coachEntityOpt);
+	}
 }

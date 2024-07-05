@@ -23,4 +23,6 @@ public interface AthleteServiceInputPort {
 
 	void deleteAthlete(@Valid String idAthlete) throws BusinessException;
 
+	Optional<Athlete> findByPersonalInformationAthlete(@Valid String document);
+
 }

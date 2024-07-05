@@ -16,26 +16,26 @@ import lombok.extern.jackson.Jacksonized;
 @AllArgsConstructor
 public class AppointmentDto {
 
-	String id;
+	private String id;
 
-	LocalDateTime date;
+	private LocalDateTime date;
 
-	String coachId;
+	private String coachId;
 
-	String coachName;
+	private String coachName;
 
-	String coachSurname;
+	private String coachSurname;
 
-	String coachDocument;
+	private String coachDocument;
 
-	String athleteId;
+	private String athleteId;
 
-	String athleteName;
+	private String athleteName;
 
-	String athleteSurname;
+	private String athleteSurname;
 
-	String athleteDocument;
+	private String athleteDocument;
 
-	TrainingTypeRecord trainingTypeRecord;
+	private TrainingTypeRecord trainingTypeRecord;
 
 }

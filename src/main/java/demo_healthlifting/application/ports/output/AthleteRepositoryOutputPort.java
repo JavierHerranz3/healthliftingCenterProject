@@ -22,4 +22,6 @@ public interface AthleteRepositoryOutputPort {
 
 	Optional<Athlete> getAthleteById(@Valid String athleteId);
 
+	Optional<Athlete> findByPersonalInformationAthlete(@Valid String document);
+
 }

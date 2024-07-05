@@ -54,7 +54,7 @@ public class HealthliftingService
 		List<String> trainingSheet = new ArrayList<>();
 		athlete.setIdTrainingSheet(trainingSheet);
 
-		// Create the person
+		// Create the athlete
 		String nuevoId = athleteRepository.createAthlete(athlete);
 		athlete.setId(nuevoId);
 
@@ -72,7 +72,7 @@ public class HealthliftingService
 		List<String> trainingSheet = new ArrayList<>();
 		coach.setIdTrainingSheet(trainingSheet);
 
-		// Create the person
+		// Create the coach
 		String nuevoId = coachRepository.createCoach(coach);
 		coach.setId(nuevoId);
 
@@ -82,21 +82,24 @@ public class HealthliftingService
 	@Override
 	@Transactional
 	public String createAppointment(@Valid Appointment appointment) throws BusinessException {
-		log.debug("createAppointment");
+		log.debug("Entering createAppointment with appointment: {}", appointment);
 
 		if (appointment == null) {
+			log.error("Appointment object is null");
 			throw new IllegalArgumentException("El objeto appointment no puede ser null.");
 		}
 
 		String exitId = null;
 
 		// Buscar al atleta por su ID
+		log.debug("Looking for athlete with ID: {}", appointment.getAthleteId());
 		Optional<Athlete> athleteOpt = athleteRepository.getAthleteById(appointment.getAthleteId());
 		if (athleteOpt.isPresent()) {
 			Athlete athlete = athleteOpt.get();
 			log.debug("Atleta encontrado: {}", athlete);
 
 			// Buscar al entrenador por su ID
+			log.debug("Looking for coach with ID: {}", appointment.getCoachId());
 			Optional<Coach> coachOpt = coachRepository.getCoachById(appointment.getCoachId());
 			if (coachOpt.isPresent()) {
 				Coach coach = coachOpt.get();
@@ -114,30 +117,31 @@ public class HealthliftingService
 				appointment.setCoachSurname(coach.getPersonalInformation().getSurname());
 				appointment.setCoachDocument(coach.getPersonalInformation().getDocument());
 
-				// Establecer tipo de entrenamiento
-				appointment.setTrainingTypeRecord(appointment.getTrainingTypeRecord());
-
 				// Guardar la cita
+				log.debug("Saving the appointment");
 				Appointment savedAppointment = appointmentRepositoryOutputPort.addAppointment(appointment);
 				exitId = savedAppointment.getId();
+				log.debug("Appointment saved with ID: {}", exitId);
 
 				// Añadir la cita a la lista de citas del atleta
+				log.debug("Adding appointment to athlete's list of appointments");
 				athlete.getIdAppointments().add(savedAppointment.getId());
 				athleteRepository.modifyAthlete(athlete);
 
 				// Añadir la cita a la lista de citas del entrenador
+				log.debug("Adding appointment to coach's list of appointments");
 				coach.getIdAppointments().add(savedAppointment.getId());
 				coachRepository.modifyCoach(coach);
+
 			} else {
-				log.error("Entrenador no encontrado");
-				// Manejar el caso en el que el entrenador no exista
+				log.error("Entrenador no encontrado con ID: {}", appointment.getCoachId());
 				throw new BusinessException(Errors.PERSON_NOT_FOUND);
 			}
 		} else {
-			log.error("Atleta no encontrado");
-			// Manejar el caso en el que el atleta no exista
+			log.error("Atleta no encontrado con ID: {}", appointment.getAthleteId());
 			throw new BusinessException(Errors.PERSON_NOT_FOUND);
 		}
+		log.debug("Exiting createAppointment with exitId: {}", exitId);
 		return exitId;
 	}
 
@@ -155,6 +159,22 @@ public class HealthliftingService
 		log.debug("getCoach");
 
 		return coachRepository.getCoach(idCoach);
+	}
+
+	@Override
+	@Transactional
+	public Optional<Athlete> findByPersonalInformationAthlete(@Valid String document) {
+		log.debug("findByPersonalInformation");
+
+		return athleteRepository.findByPersonalInformationAthlete(document);
+	}
+
+	@Override
+	@Transactional
+	public Optional<Coach> findByPersonalInformationCoach(@Valid String document) {
+		log.debug("findByPersonalInformation");
+
+		return coachRepository.findByPersonalInformationCoach(document);
 	}
 
 	@Override

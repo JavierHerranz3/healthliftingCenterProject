@@ -22,4 +22,6 @@ public interface CoachServiceInputPort {
 
 	void deleteCoach(@Valid String idCoach) throws BusinessException;
 
+	Optional<Coach> findByPersonalInformationCoach(@Valid String document);
+
 }

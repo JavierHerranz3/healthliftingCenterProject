@@ -55,8 +55,8 @@ public class AppointmentController {
 	 * @return response entity with the list of appointments
 	 */
 	@GetMapping
-	public ResponseEntity getAppointment(Pageable pageable) {
-		log.debug("getAppointment");
+	public ResponseEntity getAppointments(Pageable pageable) {
+		log.debug("getAppointments");
 
 		Page<Appointment> listDomain;
 		try {
@@ -94,15 +94,13 @@ public class AppointmentController {
 	 * @return response entity with creation location header
 	 */
 	@PostMapping
-	public ResponseEntity postAppointment(@RequestBody PostPutAppointmentDto appointmentDto) {
-		log.debug("postAppointment");
-
+	public ResponseEntity postAppointment(@RequestBody @Valid PostPutAppointmentDto appointmentDto) {
 		try {
 			// Convertir el DTO a dominio
-			Appointment appointmentDomain = appointmentToPostPutAppointmentDtoMapper.fromOutputToInput(appointmentDto);
+			Appointment appDomain = appointmentToPostPutAppointmentDtoMapper.fromOutputToInput(appointmentDto);
 
 			// Llamar al servicio para agregar la cita
-			String appointmentId = appointmentService.createAppointment(appointmentDomain);
+			String appointmentId = appointmentService.createAppointment(appDomain);
 			URI locationHeader = createUri(appointmentId);
 			return ResponseEntity.created(locationHeader).build();
 		} catch (Exception e) {

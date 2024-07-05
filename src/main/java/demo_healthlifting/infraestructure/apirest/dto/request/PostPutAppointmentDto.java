@@ -18,7 +18,7 @@ import lombok.extern.jackson.Jacksonized;
 public class PostPutAppointmentDto {
 	@NotNull
 	LocalDateTime date;
-
+	@NotNull
 	String coachId;
 
 	String coachName;
@@ -26,7 +26,7 @@ public class PostPutAppointmentDto {
 	String coachSurname;
 
 	String coachDocument;
-
+	@NotNull
 	String athleteId;
 
 	String athleteName;
@@ -34,7 +34,7 @@ public class PostPutAppointmentDto {
 	String athleteSurname;
 
 	String athleteDocument;
-
+	@NotNull
 	TrainingTypeRecord trainingTypeRecord;
 
 }

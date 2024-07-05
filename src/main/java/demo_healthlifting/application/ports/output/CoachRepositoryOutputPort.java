@@ -22,4 +22,6 @@ public interface CoachRepositoryOutputPort {
 
 	Optional<Coach> getCoachById(@Valid String coachId);
 
+	Optional<Coach> findByPersonalInformationCoach(@Valid String document);
+
 }

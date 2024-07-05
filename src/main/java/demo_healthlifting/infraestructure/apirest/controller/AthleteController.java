@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -78,6 +79,17 @@ public class AthleteController {
 		}
 	}
 
+	@GetMapping("/list")
+	public ResponseEntity getAthleteDocument(@PathVariable("list") @RequestParam String document) {
+		log.debug("getAthleteDocument");
+		Optional<Athlete> athleteOpt = athleteService.findByPersonalInformationAthlete(document);
+		if (athleteOpt.isPresent()) {
+			return ResponseEntity.ok(athleteToAthleteDtoMapper.fromInputToOutput(athleteOpt));
+		} else {
+			return ResponseEntity.notFound().build();
+		}
+	}
+
 	@PostMapping
 	public ResponseEntity postAthlete(@Valid @RequestBody PostPutAthleteDto athleteDto) throws BusinessException {
 		log.debug("postAthlete");
@@ -92,20 +104,20 @@ public class AthleteController {
 		return ResponseEntity.ok(response);
 	}
 
-	@PatchMapping("/{athleteId}")
-	public ResponseEntity patchAthlete(@PathVariable("athleteId") String id, @RequestBody PatchAthleteDto dto) {
+	@PatchMapping("/{athleteDetailId}")
+	public ResponseEntity patchAthlete(@PathVariable("athleteDetailId") String id, @RequestBody PatchAthleteDto dto) {
 		log.debug("patchAthlete");
 
 		Athlete domain = athleteToPatchAthleteDtoMapper.fromOutputToInput(dto);
 		domain.setId(id);
 		try {
 			athleteService.modificationPartialAthlete(domain);
+			return ResponseEntity.ok().build();
 		} catch (BusinessException e) {
 			log.error("Error modify Athlete", e);
 			return ResponseEntity.badRequest().body(e.getMessage());
 		}
 
-		return ResponseEntity.noContent().build();
 	}
 
 	@DeleteMapping("/{athleteId}")

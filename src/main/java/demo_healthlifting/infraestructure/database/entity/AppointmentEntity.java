@@ -17,7 +17,7 @@ import lombok.extern.jackson.Jacksonized;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Document("APPOINMENTS")
+@Document("APPOINTMENTS")
 public class AppointmentEntity {
 	@Id
 	String id;

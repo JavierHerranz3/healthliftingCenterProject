@@ -81,4 +81,13 @@ public class AthleteRepositoryService implements AthleteRepositoryOutputPort {
 		return athleteToAthleteEntityMapper.fromOutputToInput(athleteEntity);
 	}
 
+	@Override
+	public Optional<Athlete> findByPersonalInformationAthlete(@Valid String document) {
+		log.debug("findByPersonalInformation");
+
+		Optional<AthleteEntity> athleteEntityOpt = athleteRepository.findByPersonalInformationAndEliminate(document,
+				false);
+		return athleteToAthleteEntityMapper.fromOutputToInput(athleteEntityOpt);
+	}
+
 }
