@@ -38,7 +38,7 @@ public class HealthliftingService
 	CoachRepositoryOutputPort coachRepository;
 
 	@Autowired
-	AppointmentRepositoryOutputPort appointmentRepositoryOutputPort;
+	AppointmentRepositoryOutputPort appointmentRepository;
 
 	@Autowired
 	HealthliftingPatchMapper healthliftingPatchMapper;
@@ -119,7 +119,7 @@ public class HealthliftingService
 
 				// Guardar la cita
 				log.debug("Saving the appointment");
-				Appointment savedAppointment = appointmentRepositoryOutputPort.addAppointment(appointment);
+				Appointment savedAppointment = appointmentRepository.addAppointment(appointment);
 				exitId = savedAppointment.getId();
 				log.debug("Appointment saved with ID: {}", exitId);
 
@@ -163,18 +163,16 @@ public class HealthliftingService
 
 	@Override
 	@Transactional
-	public Optional<Athlete> findByPersonalInformationAthlete(@Valid String document) {
-		log.debug("findByPersonalInformation");
-
-		return athleteRepository.findByPersonalInformationAthlete(document);
+	public Optional<Athlete> findByAthletePersonalInformationDocument(@Valid String document) {
+		return athleteRepository.findByAthletePersonalInformationDocument(document);
 	}
 
 	@Override
 	@Transactional
-	public Optional<Coach> findByPersonalInformationCoach(@Valid String document) {
-		log.debug("findByPersonalInformation");
+	public Optional<Coach> findByCoachPersonalInformationDocument(@Valid String document) {
+		log.debug("findByCoachPersonalInformationDocument");
 
-		return coachRepository.findByPersonalInformationCoach(document);
+		return coachRepository.findByCoachPersonalInformationDocument(document);
 	}
 
 	@Override
@@ -182,7 +180,7 @@ public class HealthliftingService
 	public Optional<Appointment> getAppointment(@Valid String idAppointment) {
 		log.debug("getAppointment");
 
-		return appointmentRepositoryOutputPort.getAppointment(idAppointment);
+		return appointmentRepository.getAppointment(idAppointment);
 	}
 
 	@Override
@@ -218,7 +216,7 @@ public class HealthliftingService
 			throw new BusinessException(Errors.MAXIMUM_PAGINATION_EXCEEDED);
 		}
 
-		return appointmentRepositoryOutputPort.getAppointments(pageable);
+		return appointmentRepository.getAppointments(pageable);
 	}
 
 	@Override
@@ -260,15 +258,15 @@ public class HealthliftingService
 	public void modificationPartialAppointment(@Valid Appointment inputAppointment) throws BusinessException {
 		log.debug("modificationPartialAppointment");
 
-		Optional<Appointment> optAppointment = appointmentRepositoryOutputPort.getAppointment(inputAppointment.getId());
+		Optional<Appointment> optAppointment = appointmentRepository.getAppointment(inputAppointment.getId());
 		if (!optAppointment.isPresent()) {
-			throw new BusinessException(Errors.PERSON_NOT_FOUND);
+			throw new BusinessException(Errors.APPOINTMENT_NOT_FOUND);
 		}
 
 		Appointment updated = optAppointment.get();
 		healthliftingPatchMapper.update(updated, inputAppointment);
 
-		appointmentRepositoryOutputPort.modifyAppointment(updated);
+		appointmentRepository.modifyAppointment(updated);
 
 	}
 
@@ -305,12 +303,12 @@ public class HealthliftingService
 	public void modificationTotalAppointment(@Valid Appointment inputAppointment) throws BusinessException {
 		log.debug("modificationTotalAppointment");
 
-		Optional<Appointment> optAppointment = appointmentRepositoryOutputPort.getAppointment(inputAppointment.getId());
+		Optional<Appointment> optAppointment = appointmentRepository.getAppointment(inputAppointment.getId());
 		if (!optAppointment.isPresent()) {
 			throw new BusinessException(Errors.APPOINTMENT_NOT_FOUND);
 		}
 
-		appointmentRepositoryOutputPort.modifyAppointment(inputAppointment);
+		appointmentRepository.modifyAppointment(inputAppointment);
 
 	}
 
@@ -347,12 +345,12 @@ public class HealthliftingService
 	public void deleteAppointment(@Valid String idAppointment) throws BusinessException {
 		log.debug("deleteAppointment");
 
-		Optional<Appointment> optAppointment = appointmentRepositoryOutputPort.getAppointment(idAppointment);
+		Optional<Appointment> optAppointment = appointmentRepository.getAppointment(idAppointment);
 		if (!optAppointment.isPresent()) {
 			throw new BusinessException(Errors.APPOINTMENT_NOT_FOUND);
 		}
 
-		appointmentRepositoryOutputPort.deleteAppointment(idAppointment);
+		appointmentRepository.deleteAppointment(idAppointment);
 
 	}
 

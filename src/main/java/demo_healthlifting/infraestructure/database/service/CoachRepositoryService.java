@@ -74,7 +74,7 @@ public class CoachRepositoryService implements CoachRepositoryOutputPort {
 	}
 
 	@Override
-	@Cacheable(value = "persons", key = "#id")
+	@Cacheable(value = "coach", key = "#id")
 	public Optional<Coach> getCoachById(@Valid String id) {
 		log.debug("getCoachById");
 		Optional<CoachEntity> coachEntity = coachRepository.findByIdAndEliminate(id, false);
@@ -82,10 +82,12 @@ public class CoachRepositoryService implements CoachRepositoryOutputPort {
 	}
 
 	@Override
-	public Optional<Coach> findByPersonalInformationCoach(@Valid String document) {
-		log.debug("findByPersonalInformation");
-
-		Optional<CoachEntity> coachEntityOpt = coachRepository.findByPersonalInformationAndEliminate(document, false);
-		return coachToCoachEntityMapper.fromOutputToInput(coachEntityOpt);
+	@Cacheable(value = "coaches", key = "#document")
+	public Optional<Coach> findByCoachPersonalInformationDocument(@Valid String document) {
+		log.debug("findByCoachPersonalInformationDocument");
+		Optional<CoachEntity> coachEntityOpt = coachRepository.findByPersonalInformationDocumentAndEliminate(document,
+				false);
+		return coachEntityOpt.map(coachToCoachEntityMapper::fromOutputToInput);
 	}
+
 }

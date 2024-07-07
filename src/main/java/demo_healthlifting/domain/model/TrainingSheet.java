@@ -15,8 +15,6 @@ public class TrainingSheet {
 
 	private TrainingTypeRecord trainingTypeRecord;
 
-	private String trainingType;
-
 	private String observations;
 
 	private String coachId;

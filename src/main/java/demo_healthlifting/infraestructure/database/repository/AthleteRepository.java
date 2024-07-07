@@ -19,6 +19,6 @@ public interface AthleteRepository extends MongoRepository<AthleteEntity, String
 
 	Optional<AthleteEntity> findByIdAndEliminate(@Valid String id, boolean eliminate);
 
-	Optional<AthleteEntity> findByPersonalInformationAndEliminate(@Valid String document, boolean b);
+	Optional<AthleteEntity> findByPersonalInformationDocumentAndEliminate(@Valid String document, boolean b);
 
 }

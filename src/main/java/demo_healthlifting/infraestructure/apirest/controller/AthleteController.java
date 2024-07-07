@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -79,12 +78,12 @@ public class AthleteController {
 		}
 	}
 
-	@GetMapping("/list")
-	public ResponseEntity getAthleteDocument(@PathVariable("list") @RequestParam String document) {
+	@GetMapping("/list/{document}")
+	public ResponseEntity getAthleteByDocument(@PathVariable("document") String document) {
 		log.debug("getAthleteDocument");
-		Optional<Athlete> athleteOpt = athleteService.findByPersonalInformationAthlete(document);
+		Optional<Athlete> athleteOpt = athleteService.findByAthletePersonalInformationDocument(document);
 		if (athleteOpt.isPresent()) {
-			return ResponseEntity.ok(athleteToAthleteDtoMapper.fromInputToOutput(athleteOpt));
+			return ResponseEntity.ok(athleteToAthleteDtoMapper.fromInputToOutput(athleteOpt.get()));
 		} else {
 			return ResponseEntity.notFound().build();
 		}

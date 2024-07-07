@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -61,7 +60,7 @@ public class CoachController {
 			log.error("Error Getting Coaches");
 			return ResponseEntity.badRequest().body(e.getMessage());
 		}
-		return ResponseEntity.ok(coachToPatchCoachDtoMapper.fromInputToOutput(listDomain));
+		return ResponseEntity.ok(coachToCoachDtoMapper.fromInputToOutput(listDomain));
 	}
 
 	@GetMapping("/{coachId}")
@@ -78,12 +77,12 @@ public class CoachController {
 		}
 	}
 
-	@GetMapping("/list")
-	public ResponseEntity getCoachDocument(@PathVariable("list") @RequestParam String document) {
-		log.debug("getAthleteDocument");
-		Optional<Coach> coachOpt = coachService.findByPersonalInformationCoach(document);
+	@GetMapping("/list/{document}")
+	public ResponseEntity getCoachDocument(@PathVariable("document") String document) {
+		log.debug("getCoachDocument");
+		Optional<Coach> coachOpt = coachService.findByCoachPersonalInformationDocument(document);
 		if (coachOpt.isPresent()) {
-			return ResponseEntity.ok(coachToCoachDtoMapper.fromInputToOutput(coachOpt));
+			return ResponseEntity.ok(coachToCoachDtoMapper.fromInputToOutput(coachOpt.get()));
 		} else {
 			return ResponseEntity.notFound().build();
 		}

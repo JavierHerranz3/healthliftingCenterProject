@@ -74,7 +74,7 @@ public class AthleteRepositoryService implements AthleteRepositoryOutputPort {
 	}
 
 	@Override
-	@Cacheable(value = "persons", key = "#id")
+	@Cacheable(value = "athletes", key = "#id")
 	public Optional<Athlete> getAthleteById(@Valid String id) {
 		log.debug("getAthleteById");
 		Optional<AthleteEntity> athleteEntity = athleteRepository.findByIdAndEliminate(id, false);
@@ -82,12 +82,11 @@ public class AthleteRepositoryService implements AthleteRepositoryOutputPort {
 	}
 
 	@Override
-	public Optional<Athlete> findByPersonalInformationAthlete(@Valid String document) {
-		log.debug("findByPersonalInformation");
-
-		Optional<AthleteEntity> athleteEntityOpt = athleteRepository.findByPersonalInformationAndEliminate(document,
-				false);
-		return athleteToAthleteEntityMapper.fromOutputToInput(athleteEntityOpt);
+	@Cacheable(value = "athletes", key = "#document")
+	public Optional<Athlete> findByAthletePersonalInformationDocument(@Valid String document) {
+		log.debug("findByAthletePersonalInformationDocument");
+		Optional<AthleteEntity> athleteEntityOpt = athleteRepository
+				.findByPersonalInformationDocumentAndEliminate(document, false);
+		return athleteEntityOpt.map(athleteToAthleteEntityMapper::fromOutputToInput);
 	}
-
 }

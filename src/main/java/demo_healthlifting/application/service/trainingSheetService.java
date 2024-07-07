@@ -41,33 +41,24 @@ public class trainingSheetService implements TrainingSheetServiceInputPort {
 	@Transactional
 	public String createTrainingSheet(@Valid TrainingSheet trainingSheet) throws BusinessException {
 		if (trainingSheet == null) {
-			throw new IllegalArgumentException("El objeto medicalRecord no puede ser null.");
+			throw new IllegalArgumentException("El objeto trainingsheet no puede ser null.");
 		}
-		String exitId = null;
 
-		// Buscamos la persona en la que quieren guardar una ficha médica y validamos
+		// Buscamos el atleta por ID y validamos su existencia
 		Optional<Athlete> athleteOpt = athleteRepository.getAthleteById(trainingSheet.getAthleteId());
-		if (athleteOpt.isPresent()) {
-			Athlete athlete = athleteOpt.get();
-
-			// Obtenemos la ficha médica y seteamos los datos de la visita
-			trainingSheet.setAthleteId(exitId);
-			trainingSheet.setCoachId(exitId);
-
-			// Guardamos la nueva ficha médica en su repo
-			TrainingSheet savedTrainingSheet = trainingSheetRepositoryOutputPort.createTrainingSheet(trainingSheet);
-			exitId = savedTrainingSheet.getId();
-
-			// Actualizamos la persona con el id generado de la ficha
-			Athlete athleteSave = athleteOpt.get();
-			athleteSave.getIdTrainingSheet().add(savedTrainingSheet.getId());
-			athleteRepository.modifyAthlete(athleteSave);
-
-		} else {
-
-			// Manejar el caso en que no exista alguna persona
+		if (!athleteOpt.isPresent()) {
+			// Manejar el caso en que no exista el atleta
 			throw new BusinessException(Errors.PERSON_NOT_FOUND);
 		}
+
+		// Guardamos la nueva ficha de entrenamiento en su repositorio
+		TrainingSheet savedTrainingSheet = trainingSheetRepositoryOutputPort.createTrainingSheet(trainingSheet);
+		String exitId = savedTrainingSheet.getId();
+
+		// Actualizamos el atleta con el ID generado de la ficha de entrenamiento
+		Athlete athlete = athleteOpt.get();
+		athlete.getIdTrainingSheet().add(exitId);
+		athleteRepository.modifyAthlete(athlete);
 
 		return exitId;
 	}

@@ -14,6 +14,7 @@ import demo_healthlifting.domain.model.Appointment;
 import demo_healthlifting.infraestructure.database.entity.AppointmentEntity;
 import demo_healthlifting.infraestructure.database.mapper.AppointmentToAppointmentEntityMapper;
 import demo_healthlifting.infraestructure.database.repository.AppointmentRepository;
+import demo_healthlifting.infraestructure.database.repository.CoachRepository;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 
@@ -23,6 +24,9 @@ public class AppointmentRepositoryService implements AppointmentRepositoryOutput
 
 	@Autowired
 	AppointmentRepository appointmentRepository;
+
+	@Autowired
+	CoachRepository coachRepository;
 
 	@Autowired
 	AppointmentToAppointmentEntityMapper appointmentToAppointmentEntityMapper;

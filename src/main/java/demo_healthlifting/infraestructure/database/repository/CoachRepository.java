@@ -19,6 +19,6 @@ public interface CoachRepository extends MongoRepository<CoachEntity, String> {
 
 	Page<CoachEntity> findByEliminate(boolean eliminate, @Valid Pageable pageable);
 
-	Optional<CoachEntity> findByPersonalInformationAndEliminate(@Valid String document, boolean b);
+	Optional<CoachEntity> findByPersonalInformationDocumentAndEliminate(@Valid String document, boolean b);
 
 }

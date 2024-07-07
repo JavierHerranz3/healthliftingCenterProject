@@ -10,6 +10,7 @@ import demo_healthlifting.domain.model.Coach;
 import jakarta.validation.Valid;
 
 public interface CoachServiceInputPort {
+
 	String createCoach(@Valid Coach coach);
 
 	Optional<Coach> getCoach(@Valid String idCoach);
@@ -22,6 +23,6 @@ public interface CoachServiceInputPort {
 
 	void deleteCoach(@Valid String idCoach) throws BusinessException;
 
-	Optional<Coach> findByPersonalInformationCoach(@Valid String document);
+	Optional<Coach> findByCoachPersonalInformationDocument(@Valid String document);
 
 }

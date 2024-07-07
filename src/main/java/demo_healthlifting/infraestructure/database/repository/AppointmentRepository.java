@@ -1,5 +1,6 @@
 package demo_healthlifting.infraestructure.database.repository;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.domain.Page;
@@ -18,5 +19,11 @@ public interface AppointmentRepository extends MongoRepository<AppointmentEntity
 	Optional<AppointmentEntity> findByIdAndEliminate(@Valid String id, boolean eliminate);
 
 	Page<AppointmentEntity> findByEliminate(boolean eliminate, @Valid Pageable pageable);
+
+	Page<AppointmentEntity> findByIdAndEliminate(boolean b, Pageable pageable);
+
+	Page<AppointmentEntity> findByCoachId(String coachId, Pageable pageable);
+
+	Page<AppointmentEntity> findByEliminateAndId(boolean b, List<String> appointmentIds, Pageable pageable);
 
 }

@@ -22,8 +22,6 @@ public class TrainingSheetEntity {
 
 	TrainingTypeRecord trainingTypeRecord;
 
-	String trainingType;
-
 	String observations;
 
 	String coachId;

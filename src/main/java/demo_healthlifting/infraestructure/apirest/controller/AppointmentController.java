@@ -23,6 +23,7 @@ import demo_healthlifting.domain.exception.BusinessException;
 import demo_healthlifting.domain.model.Appointment;
 import demo_healthlifting.infraestructure.apirest.dto.request.PatchAppointmentDto;
 import demo_healthlifting.infraestructure.apirest.dto.request.PostPutAppointmentDto;
+import demo_healthlifting.infraestructure.apirest.dto.response.AppointmentDto;
 import demo_healthlifting.infraestructure.apirest.mapper.AppointmentToAppointmentDtoMapper;
 import demo_healthlifting.infraestructure.apirest.mapper.AppointmentToPatchAppointmentDtoMapper;
 import demo_healthlifting.infraestructure.apirest.mapper.AppointmentToPostPutAppointmentDtoMapper;
@@ -65,7 +66,7 @@ public class AppointmentController {
 			log.error("Error Getting Appointments");
 			return ResponseEntity.badRequest().body(e.getMessage());
 		}
-		return ResponseEntity.ok(appointmentToPatchAppointmentDtoMapper.fromInputToOutput(listDomain));
+		return ResponseEntity.ok(appointmentToAppointmentDtoMapper.fromInputToOutput(listDomain));
 	}
 
 	/**
@@ -96,14 +97,22 @@ public class AppointmentController {
 	@PostMapping
 	public ResponseEntity postAppointment(@RequestBody @Valid PostPutAppointmentDto appointmentDto) {
 		try {
-			// Convertir el DTO a dominio
+			// Convertir el DTO a dominio y crear la cita
 			Appointment appDomain = appointmentToPostPutAppointmentDtoMapper.fromOutputToInput(appointmentDto);
-
-			// Llamar al servicio para agregar la cita
 			String appointmentId = appointmentService.createAppointment(appDomain);
-			URI locationHeader = createUri(appointmentId);
-			return ResponseEntity.created(locationHeader).build();
+
+			// Crear la respuesta
+			AppointmentDto response = AppointmentDto.builder().id(appointmentId).date(appDomain.getDate())
+					.athleteId(appDomain.getAthleteId()).athleteName(appDomain.getAthleteName())
+					.athleteSurname(appDomain.getAthleteSurname()).athleteDocument(appDomain.getAthleteDocument())
+					.coachId(appDomain.getCoachId()).coachName(appDomain.getCoachName())
+					.coachSurname(appDomain.getCoachSurname()).coachDocument(appDomain.getCoachDocument())
+					.trainingTypeRecord(appDomain.getTrainingTypeRecord()).build();
+
+			return ResponseEntity.ok(response);
 		} catch (Exception e) {
+			// Registrar el error con más detalles
+			log.error("Error al crear la cita: ", e);
 			return ResponseEntity.badRequest().body(e.getMessage());
 		}
 	}
@@ -124,12 +133,11 @@ public class AppointmentController {
 		domain.setId(id);
 		try {
 			appointmentService.modificationPartialAppointment(domain);
+			return ResponseEntity.ok().build();
 		} catch (BusinessException e) {
 			log.error("Error modify Appointment", e);
-			return ResponseEntity.badRequest().body(e.getMessage());
+			return ResponseEntity.badRequest().body(null); // O puedes retornar e.getMessage() si prefieres
 		}
-
-		return ResponseEntity.noContent().build();
 	}
 
 	/**

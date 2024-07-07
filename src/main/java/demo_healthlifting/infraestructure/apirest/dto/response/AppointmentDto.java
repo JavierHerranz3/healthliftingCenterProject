@@ -2,6 +2,8 @@ package demo_healthlifting.infraestructure.apirest.dto.response;
 
 import java.time.LocalDateTime;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import demo_healthlifting.domain.model.TrainingTypeRecord;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -17,7 +19,7 @@ import lombok.extern.jackson.Jacksonized;
 public class AppointmentDto {
 
 	private String id;
-
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
 	private LocalDateTime date;
 
 	private String coachId;

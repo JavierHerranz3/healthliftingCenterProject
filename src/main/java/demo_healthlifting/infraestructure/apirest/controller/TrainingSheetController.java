@@ -23,6 +23,7 @@ import demo_healthlifting.domain.exception.BusinessException;
 import demo_healthlifting.domain.model.TrainingSheet;
 import demo_healthlifting.infraestructure.apirest.dto.request.PatchTrainingSheetDto;
 import demo_healthlifting.infraestructure.apirest.dto.request.PostPutTrainingSheetDto;
+import demo_healthlifting.infraestructure.apirest.dto.response.TrainingSheetDto;
 import demo_healthlifting.infraestructure.apirest.mapper.TrainingSheetToPatchTrainingSheetDtoMapper;
 import demo_healthlifting.infraestructure.apirest.mapper.TrainingSheetToPostPutTrainingSheetDtoMapper;
 import demo_healthlifting.infraestructure.apirest.mapper.TrainingSheetToTrainingSheetDtoMapper;
@@ -50,19 +51,18 @@ public class TrainingSheetController {
 	TrainingSheetToTrainingSheetDtoMapper trainingSheetToTrainingSheetDtoMapper;
 
 	@PostMapping
-	public ResponseEntity postTrainingSheet(@RequestBody PostPutTrainingSheetDto trainingSheetDto) {
-		log.debug("postAthlete");
+	public ResponseEntity postTrainingSheet(@RequestBody PostPutTrainingSheetDto trainingSheetDto)
+			throws BusinessException {
+		TrainingSheet trainingSheet = trainingSheetToPostPutTrainingSheetDtoMapper.fromOutputToInput(trainingSheetDto);
+		String idNewTrainingSheet = trainingSheetService.createTrainingSheet(trainingSheet);
+		URI locationHeader = createUri(idNewTrainingSheet);
 
-		TrainingSheet trainingSheetDomain = trainingSheetToPostPutTrainingSheetDtoMapper
-				.fromOutputToInput(trainingSheetDto);
+		TrainingSheetDto response = TrainingSheetDto.builder().id(idNewTrainingSheet)
+				.trainingTypeRecord(trainingSheet.getTrainingTypeRecord()).observations(trainingSheet.getObservations())
+				.coachId(trainingSheet.getCoachId()).athleteId(trainingSheet.getAthleteId())
+				.appointmentId(trainingSheet.getAppointmentId()).build();
 
-		try {
-			String trainingSheetId = trainingSheetService.createTrainingSheet(trainingSheetDomain);
-			URI locationHeader = createUri(trainingSheetId);
-			return ResponseEntity.created(locationHeader).build();
-		} catch (Exception e) {
-			return ResponseEntity.badRequest().body(e.getMessage());
-		}
+		return ResponseEntity.ok(response);
 	}
 
 	@GetMapping("/{trainingSheetId}")

@@ -19,8 +19,6 @@ public class TrainingSheetDto {
 
 	TrainingTypeRecord trainingTypeRecord;
 
-	String trainingType;
-
 	String observations;
 
 	String coachId;
