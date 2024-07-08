@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -85,6 +86,59 @@ public class AppointmentController {
 			return ResponseEntity.ok(appointmentToAppointmentDtoMapper.fromInputToOutput(domain.get()));
 		} else {
 			return ResponseEntity.noContent().build();
+		}
+	}
+
+	@GetMapping("/coaches/searchByDocument")
+	public ResponseEntity getAppointmentsByCoachDocument(@RequestParam String document, Pageable pageable) {
+
+		try {
+			Page<Appointment> coachAppointments = appointmentService.getAppointmentsByCoachDocument(document, pageable);
+			log.debug("Retrieved appointments: {}", coachAppointments.getContent());
+			return ResponseEntity.ok(coachAppointments);
+		} catch (BusinessException e) {
+			log.error("Error getting appointments", e);
+			return ResponseEntity.badRequest().body(e.getMessage());
+		}
+
+	}
+
+	@GetMapping("/athletes/searchByDocument")
+	public ResponseEntity getAppointmentsByAthleteDocument(@RequestParam String document, Pageable pageable) {
+
+		try {
+			Page<Appointment> athletesAppointments = appointmentService.getAppointmentsByAthleteDocument(document,
+					pageable);
+			log.debug("Retrieved appointments: {}", athletesAppointments.getContent());
+			return ResponseEntity.ok(athletesAppointments);
+		} catch (BusinessException e) {
+			log.error("Error getting appointments", e);
+			return ResponseEntity.badRequest().body(e.getMessage());
+		}
+
+	}
+
+	@GetMapping("/coaches/{id}")
+	public ResponseEntity getAppointmentsByCoachId(@PathVariable("id") String id, Pageable pageable) {
+		try {
+			Page<Appointment> coachAppointments = appointmentService.getAppointmentsByCoachId(id, pageable);
+			log.debug("Retrieved appointments: {}", coachAppointments.getContent());
+			return ResponseEntity.ok(coachAppointments);
+		} catch (BusinessException e) {
+			log.error("Error getting appointments", e);
+			return ResponseEntity.badRequest().body(e.getMessage());
+		}
+	}
+
+	@GetMapping("/athletes/{id}")
+	public ResponseEntity getAppointmentsByAthleteId(@PathVariable("id") String id, Pageable pageable) {
+		try {
+			Page<Appointment> athletesAppointments = appointmentService.getAppointmentsByAthleteId(id, pageable);
+			log.debug("Retrieved appointments: {}", athletesAppointments.getContent());
+			return ResponseEntity.ok(athletesAppointments);
+		} catch (BusinessException e) {
+			log.error("Error getting appointments", e);
+			return ResponseEntity.badRequest().body(e.getMessage());
 		}
 	}
 

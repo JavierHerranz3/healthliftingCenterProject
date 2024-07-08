@@ -1,5 +1,6 @@
 package demo_healthlifting.infraestructure.database.service;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,10 +11,15 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 
 import demo_healthlifting.application.ports.output.AppointmentRepositoryOutputPort;
+import demo_healthlifting.application.ports.utils.Errors;
+import demo_healthlifting.domain.exception.BusinessException;
 import demo_healthlifting.domain.model.Appointment;
 import demo_healthlifting.infraestructure.database.entity.AppointmentEntity;
+import demo_healthlifting.infraestructure.database.entity.AthleteEntity;
+import demo_healthlifting.infraestructure.database.entity.CoachEntity;
 import demo_healthlifting.infraestructure.database.mapper.AppointmentToAppointmentEntityMapper;
 import demo_healthlifting.infraestructure.database.repository.AppointmentRepository;
+import demo_healthlifting.infraestructure.database.repository.AthleteRepository;
 import demo_healthlifting.infraestructure.database.repository.CoachRepository;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
@@ -27,6 +33,9 @@ public class AppointmentRepositoryService implements AppointmentRepositoryOutput
 
 	@Autowired
 	CoachRepository coachRepository;
+
+	@Autowired
+	AthleteRepository athleteRepository;
 
 	@Autowired
 	AppointmentToAppointmentEntityMapper appointmentToAppointmentEntityMapper;
@@ -90,4 +99,63 @@ public class AppointmentRepositoryService implements AppointmentRepositoryOutput
 		return appointmentToAppointmentEntityMapper.fromOutputToInput(savedAppointmentEntity);
 	}
 
+	@Override
+	@Cacheable(value = "appointments", key = "#document")
+	public Page<Appointment> getAppointmentsByCoachPersonalInformationDocument(String document, Pageable pageable) {
+		log.debug("getAppointmentsByPersonalInformationDocument");
+
+		Optional<CoachEntity> coachOpt = coachRepository.findByPersonalInformationDocumentAndEliminate(document, false);
+		CoachEntity coach = coachOpt.get();
+		List<String> appointmentIds = coach.getIdAppointments();
+		Page<AppointmentEntity> appointmentEntities = appointmentRepository.findByEliminateAndIdIn(false,
+				appointmentIds, pageable);
+		return appointmentEntities.map(appointmentToAppointmentEntityMapper::fromOutputToInput);
+	}
+
+	@Override
+	public Page<Appointment> getAppointmentsByAthletePersonalInformationDocument(String document, Pageable pageable) {
+		log.debug("getAppointmentsByAthletePersonalInformationDocument");
+
+		Optional<AthleteEntity> athleteOpt = athleteRepository.findByPersonalInformationDocumentAndEliminate(document,
+				false);
+		AthleteEntity athlete = athleteOpt.get();
+		List<String> appointmentIds = athlete.getIdAppointments();
+		Page<AppointmentEntity> appointmentEntities = appointmentRepository.findByEliminateAndIdIn(false,
+				appointmentIds, pageable);
+		return appointmentEntities.map(appointmentToAppointmentEntityMapper::fromOutputToInput);
+	}
+
+	@Override
+	@Cacheable(value = "appointments", key = "#id")
+	public Page<Appointment> getAppointmentsByCoachId(String id, Pageable pageable) throws BusinessException {
+		log.debug("getAppointmentsByCoachId");
+
+		Optional<CoachEntity> coachOpt = coachRepository.findByIdAndEliminate(id, false);
+		if (coachOpt.isPresent()) {
+			CoachEntity coach = coachOpt.get();
+			List<String> appointmentIds = coach.getIdAppointments();
+			Page<AppointmentEntity> appointmentEntities = appointmentRepository.findByEliminateAndIdIn(false,
+					appointmentIds, pageable);
+			return appointmentEntities.map(appointmentToAppointmentEntityMapper::fromOutputToInput);
+		} else {
+			throw new BusinessException(Errors.PERSON_NOT_FOUND);
+		}
+	}
+
+	@Override
+	@Cacheable(value = "appointments", key = "#id")
+	public Page<Appointment> getAppointmentsByAthleteId(String id, Pageable pageable) throws BusinessException {
+		log.debug("getAppointmentsByAthleteId");
+
+		Optional<AthleteEntity> athleteOpt = athleteRepository.findByIdAndEliminate(id, false);
+		if (athleteOpt.isPresent()) {
+			AthleteEntity athlete = athleteOpt.get();
+			List<String> appointmentIds = athlete.getIdAppointments();
+			Page<AppointmentEntity> appointmentEntities = appointmentRepository.findByEliminateAndIdIn(false,
+					appointmentIds, pageable);
+			return appointmentEntities.map(appointmentToAppointmentEntityMapper::fromOutputToInput);
+		} else {
+			throw new BusinessException(Errors.PERSON_NOT_FOUND);
+		}
+	}
 }

@@ -17,10 +17,18 @@ public interface AppointmentServiceInputPort {
 
 	Page<Appointment> getAppointments(@Valid Pageable pageable) throws BusinessException;
 
+	Page<Appointment> getAppointmentsByCoachDocument(String document, Pageable pageable) throws BusinessException;
+
+	Page<Appointment> getAppointmentsByAthleteDocument(String document, Pageable pageable) throws BusinessException;
+
 	void modificationPartialAppointment(@Valid Appointment inputAppointment) throws BusinessException;
 
 	void modificationTotalAppointment(@Valid Appointment inputAppointment) throws BusinessException;
 
 	void deleteAppointment(@Valid String id) throws BusinessException;
+
+	Page<Appointment> getAppointmentsByCoachId(String id, Pageable pageable) throws BusinessException;
+
+	Page<Appointment> getAppointmentsByAthleteId(String id, Pageable pageable) throws BusinessException;
 
 }

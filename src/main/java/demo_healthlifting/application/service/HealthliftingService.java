@@ -177,10 +177,70 @@ public class HealthliftingService
 
 	@Override
 	@Transactional
+	public Page<Appointment> getAppointmentsByCoachDocument(String document, Pageable pageable)
+			throws BusinessException {
+		log.debug("getAppointmentsByCoachDocument");
+
+		Optional<Coach> coachOpt = coachRepository.findByCoachPersonalInformationDocument(document);
+		if (coachOpt.isPresent()) {
+			Coach coach = coachOpt.get();
+			return appointmentRepository.getAppointmentsByCoachPersonalInformationDocument(
+					coach.getPersonalInformation().getDocument(), pageable);
+		} else {
+			throw new BusinessException(Errors.PERSON_NOT_FOUND);
+		}
+	}
+
+	@Override
+	@Transactional
+	public Page<Appointment> getAppointmentsByAthleteDocument(String document, Pageable pageable)
+			throws BusinessException {
+		log.debug("getAppointmentsByAthleteDocument");
+
+		Optional<Athlete> athleteOpt = athleteRepository.findByAthletePersonalInformationDocument(document);
+		if (athleteOpt.isPresent()) {
+			Athlete athlete = athleteOpt.get();
+			return appointmentRepository.getAppointmentsByAthletePersonalInformationDocument(
+					athlete.getPersonalInformation().getDocument(), pageable);
+		} else {
+			throw new BusinessException(Errors.PERSON_NOT_FOUND);
+		}
+	}
+
+	@Override
+	@Transactional
 	public Optional<Appointment> getAppointment(@Valid String idAppointment) {
 		log.debug("getAppointment");
 
 		return appointmentRepository.getAppointment(idAppointment);
+	}
+
+	@Override
+	@Transactional
+	public Page<Appointment> getAppointmentsByCoachId(String id, Pageable pageable) throws BusinessException {
+		log.debug("getAppointmentByCoachId");
+
+		Optional<Coach> coachOpt = coachRepository.getCoach(id);
+		if (coachOpt.isPresent()) {
+			Coach coach = coachOpt.get();
+			return appointmentRepository.getAppointmentsByCoachId(coach.getId(), pageable);
+		} else {
+			throw new BusinessException(Errors.PERSON_NOT_FOUND);
+		}
+	}
+
+	@Override
+	@Transactional
+	public Page<Appointment> getAppointmentsByAthleteId(String id, Pageable pageable) throws BusinessException {
+		log.debug("getAppointmentsByAthleteId");
+
+		Optional<Athlete> athleteOpt = athleteRepository.getAthlete(id);
+		if (athleteOpt.isPresent()) {
+			Athlete athlete = athleteOpt.get();
+			return appointmentRepository.getAppointmentsByAthleteId(athlete.getId(), pageable);
+		} else {
+			throw new BusinessException(Errors.PERSON_NOT_FOUND);
+		}
 	}
 
 	@Override
