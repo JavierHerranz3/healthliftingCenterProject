@@ -14,13 +14,13 @@ public interface CoachRepositoryOutputPort {
 
 	Optional<Coach> getCoach(@Valid String idCoach);
 
+	Optional<Coach> getCoachById(@Valid String coachId);
+
 	Page<Coach> getCoaches(@Valid Pageable pageable);
 
 	void modifyCoach(@Valid Coach updated);
 
 	void deleteCoach(@Valid String idCoach);
-
-	Optional<Coach> getCoachById(@Valid String coachId);
 
 	Optional<Coach> findByCoachPersonalInformationDocument(@Valid String document);
 

@@ -27,6 +27,12 @@ public class AthleteRepositoryService implements AthleteRepositoryOutputPort {
 	@Autowired
 	AthleteToAthleteEntityMapper athleteToAthleteEntityMapper;
 
+	/**
+	 * Creates a new athlete and evicts all entries in the "athletes" cache.
+	 *
+	 * @param input the athlete to be created
+	 * @return the ID of the newly created athlete
+	 */
 	@Override
 	@CacheEvict(value = "athletes", allEntries = true)
 	public String createAthlete(@Valid Athlete input) {
@@ -35,6 +41,13 @@ public class AthleteRepositoryService implements AthleteRepositoryOutputPort {
 		return athleteRepository.save(entity).getId();
 	}
 
+	/**
+	 * Retrieves an athlete by ID and caches the result.
+	 *
+	 * @param id the ID of the athlete to be retrieved
+	 * @return an Optional containing the athlete if found, or an empty Optional if
+	 *         not
+	 */
 	@Override
 	@Cacheable(value = "athletes", key = "#id")
 	public Optional<Athlete> getAthlete(@Valid String id) {
@@ -44,6 +57,12 @@ public class AthleteRepositoryService implements AthleteRepositoryOutputPort {
 		return athleteToAthleteEntityMapper.fromOutputToInput(resourceEntity);
 	}
 
+	/**
+	 * Retrieves a paginated list of athletes and caches the result.
+	 *
+	 * @param pageable the pagination information
+	 * @return a paginated list of athletes
+	 */
 	@Override
 	@Cacheable(value = "athletes", key = "#pageable")
 	public Page<Athlete> getAthletes(@Valid Pageable pageable) {
@@ -52,6 +71,11 @@ public class AthleteRepositoryService implements AthleteRepositoryOutputPort {
 		return athleteToAthleteEntityMapper.fromOutputToInput(listEntity);
 	}
 
+	/**
+	 * Modifies an existing athlete and evicts all entries in the "athletes" cache.
+	 *
+	 * @param input the athlete with updated information
+	 */
 	@Override
 	@CacheEvict(value = "athletes", allEntries = true)
 	public void modifyAthlete(@Valid Athlete input) {
@@ -61,6 +85,12 @@ public class AthleteRepositoryService implements AthleteRepositoryOutputPort {
 
 	}
 
+	/**
+	 * Deletes an athlete by marking them as eliminated and evicts all entries in
+	 * the "athletes" cache.
+	 *
+	 * @param idAthlete the ID of the athlete to be deleted
+	 */
 	@Override
 	@CacheEvict(value = "athletes", allEntries = true)
 	public void deleteAthlete(@Valid String idAthlete) {
@@ -73,6 +103,14 @@ public class AthleteRepositoryService implements AthleteRepositoryOutputPort {
 
 	}
 
+	/**
+	 * Retrieves an athlete by ID, excluding eliminated athletes, and caches the
+	 * result.
+	 *
+	 * @param id the ID of the athlete to be retrieved
+	 * @return an Optional containing the athlete if found, or an empty Optional if
+	 *         not
+	 */
 	@Override
 	@Cacheable(value = "athletes", key = "#id")
 	public Optional<Athlete> getAthleteById(@Valid String id) {
@@ -81,6 +119,14 @@ public class AthleteRepositoryService implements AthleteRepositoryOutputPort {
 		return athleteToAthleteEntityMapper.fromOutputToInput(athleteEntity);
 	}
 
+	/**
+	 * Finds an athlete by their personal information document, excluding eliminated
+	 * athletes, and caches the result.
+	 *
+	 * @param document the document of the athlete to be found
+	 * @return an Optional containing the athlete if found, or an empty Optional if
+	 *         not
+	 */
 	@Override
 	@Cacheable(value = "athletes", key = "#document")
 	public Optional<Athlete> findByAthletePersonalInformationDocument(@Valid String document) {

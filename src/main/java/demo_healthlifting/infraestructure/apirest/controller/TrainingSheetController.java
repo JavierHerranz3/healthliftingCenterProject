@@ -79,6 +79,26 @@ public class TrainingSheetController {
 		}
 	}
 
+	@GetMapping("/athletes/{athleteId}")
+	public ResponseEntity getTrainingSheetsByAthleteId(@PathVariable String athleteId, Pageable pageable) {
+		try {
+			Page<TrainingSheet> trainingSheets = trainingSheetService.getTrainingSheetsByAthleteId(athleteId, pageable);
+			return ResponseEntity.ok(trainingSheets);
+		} catch (BusinessException e) {
+			return ResponseEntity.badRequest().body(e.getMessage());
+		}
+	}
+
+	@GetMapping("/coaches/{coachId}")
+	public ResponseEntity getTrainingSheetsByCoachId(@PathVariable String coachId, Pageable pageable) {
+		try {
+			Page<TrainingSheet> trainingSheets = trainingSheetService.getTrainingSheetsByCoachId(coachId, pageable);
+			return ResponseEntity.ok(trainingSheets);
+		} catch (BusinessException e) {
+			return ResponseEntity.badRequest().body(e.getMessage());
+		}
+	}
+
 	@GetMapping
 	public ResponseEntity getTrainingSheets(Pageable pageable) {
 		log.debug("getTrainingSheets");

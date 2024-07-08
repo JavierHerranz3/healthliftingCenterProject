@@ -20,8 +20,10 @@ public interface AppointmentRepository extends MongoRepository<AppointmentEntity
 
 	Page<AppointmentEntity> findByEliminate(boolean eliminate, @Valid Pageable pageable);
 
-	Page<AppointmentEntity> findByIdAndEliminate(boolean b, Pageable pageable);
+	Page<AppointmentEntity> findByIdAndEliminate(boolean b, List<String> appointmentIds, Pageable pageable);
 
-	Page<AppointmentEntity> findByEliminateAndIdIn(boolean b, List<String> appointmentIds, Pageable pageable);
+	Page<AppointmentEntity> findAthleteByEliminateAndIdIn(boolean b, List<String> appointmentIds, Pageable pageable);
+
+	Page<AppointmentEntity> findByIdInAndEliminate(List<String> appointmentIds, boolean b, Pageable pageable);
 
 }

@@ -43,6 +43,12 @@ public class HealthliftingService
 	@Autowired
 	HealthliftingPatchMapper healthliftingPatchMapper;
 
+	/**
+	 * Creates a new athlete.
+	 *
+	 * @param athlete the athlete to be created
+	 * @return the ID of the newly created athlete
+	 */
 	@Override
 	@Transactional
 	public String createAthlete(@Valid Athlete athlete) {
@@ -61,6 +67,12 @@ public class HealthliftingService
 		return nuevoId;
 	}
 
+	/**
+	 * Creates a new coach.
+	 *
+	 * @param coach the coach to be created
+	 * @return the ID of the newly created coach
+	 */
 	@Override
 	@Transactional
 	public String createCoach(@Valid Coach coach) {
@@ -79,6 +91,13 @@ public class HealthliftingService
 		return nuevoId;
 	}
 
+	/**
+	 * Creates a new appointment.
+	 *
+	 * @param appointment the appointment to be created
+	 * @return the ID of the newly created appointment
+	 * @throws BusinessException if there is a problem creating the appointment
+	 */
 	@Override
 	@Transactional
 	public String createAppointment(@Valid Appointment appointment) throws BusinessException {
@@ -145,6 +164,13 @@ public class HealthliftingService
 		return exitId;
 	}
 
+	/**
+	 * Retrieves an athlete by ID.
+	 *
+	 * @param idAthlete the ID of the athlete to be retrieved
+	 * @return an Optional containing the athlete if found, or an empty Optional if
+	 *         not
+	 */
 	@Override
 	@Transactional
 	public Optional<Athlete> getAthlete(@Valid String idAthlete) {
@@ -153,6 +179,13 @@ public class HealthliftingService
 		return athleteRepository.getAthlete(idAthlete);
 	}
 
+	/**
+	 * Retrieves a coach by ID.
+	 *
+	 * @param idCoach the ID of the coach to be retrieved
+	 * @return an Optional containing the coach if found, or an empty Optional if
+	 *         not
+	 */
 	@Override
 	@Transactional
 	public Optional<Coach> getCoach(@Valid String idCoach) {
@@ -161,12 +194,26 @@ public class HealthliftingService
 		return coachRepository.getCoach(idCoach);
 	}
 
+	/**
+	 * Finds an athlete by their personal information document.
+	 *
+	 * @param document the document of the athlete to be found
+	 * @return an Optional containing the athlete if found, or an empty Optional if
+	 *         not
+	 */
 	@Override
 	@Transactional
 	public Optional<Athlete> findByAthletePersonalInformationDocument(@Valid String document) {
 		return athleteRepository.findByAthletePersonalInformationDocument(document);
 	}
 
+	/**
+	 * Finds a coach by their personal information document.
+	 *
+	 * @param document the document of the coach to be found
+	 * @return an Optional containing the coach if found, or an empty Optional if
+	 *         not
+	 */
 	@Override
 	@Transactional
 	public Optional<Coach> findByCoachPersonalInformationDocument(@Valid String document) {
@@ -175,6 +222,14 @@ public class HealthliftingService
 		return coachRepository.findByCoachPersonalInformationDocument(document);
 	}
 
+	/**
+	 * Retrieves a paginated list of appointments by coach document.
+	 *
+	 * @param document the document of the coach
+	 * @param pageable the pagination information
+	 * @return a paginated list of appointments
+	 * @throws BusinessException if the coach is not found
+	 */
 	@Override
 	@Transactional
 	public Page<Appointment> getAppointmentsByCoachDocument(String document, Pageable pageable)
@@ -191,6 +246,14 @@ public class HealthliftingService
 		}
 	}
 
+	/**
+	 * Retrieves a paginated list of appointments by athlete document.
+	 *
+	 * @param document the document of the athlete
+	 * @param pageable the pagination information
+	 * @return a paginated list of appointments
+	 * @throws BusinessException if the coach is not found
+	 */
 	@Override
 	@Transactional
 	public Page<Appointment> getAppointmentsByAthleteDocument(String document, Pageable pageable)
@@ -207,6 +270,13 @@ public class HealthliftingService
 		}
 	}
 
+	/**
+	 * Retrieves an appointment by ID.
+	 *
+	 * @param idAppointment the ID of the appointment to be retrieved
+	 * @return an Optional containing the appointment if found, or an empty Optional
+	 *         if not
+	 */
 	@Override
 	@Transactional
 	public Optional<Appointment> getAppointment(@Valid String idAppointment) {
@@ -215,12 +285,20 @@ public class HealthliftingService
 		return appointmentRepository.getAppointment(idAppointment);
 	}
 
+	/**
+	 * Retrieves a paginated list of appointments by coach ID.
+	 *
+	 * @param id       the ID of the coach
+	 * @param pageable the pagination information
+	 * @return a paginated list of appointments
+	 * @throws BusinessException if the coach is not found
+	 */
 	@Override
 	@Transactional
 	public Page<Appointment> getAppointmentsByCoachId(String id, Pageable pageable) throws BusinessException {
 		log.debug("getAppointmentByCoachId");
 
-		Optional<Coach> coachOpt = coachRepository.getCoach(id);
+		Optional<Coach> coachOpt = coachRepository.getCoachById(id);
 		if (coachOpt.isPresent()) {
 			Coach coach = coachOpt.get();
 			return appointmentRepository.getAppointmentsByCoachId(coach.getId(), pageable);
@@ -229,6 +307,14 @@ public class HealthliftingService
 		}
 	}
 
+	/**
+	 * Retrieves a paginated list of appointments by athlete ID.
+	 *
+	 * @param id       the ID of the athlete
+	 * @param pageable the pagination information
+	 * @return a paginated list of appointments
+	 * @throws BusinessException if the athlete is not found
+	 */
 	@Override
 	@Transactional
 	public Page<Appointment> getAppointmentsByAthleteId(String id, Pageable pageable) throws BusinessException {
@@ -243,6 +329,13 @@ public class HealthliftingService
 		}
 	}
 
+	/**
+	 * Retrieves a paginated list of athletes.
+	 *
+	 * @param pageable the pagination information
+	 * @return a paginated list of athletes
+	 * @throws BusinessException if the pagination size exceeds the maximum allowed
+	 */
 	@Override
 	@Transactional
 	public Page<Athlete> getAthletes(@Valid Pageable pageable) throws BusinessException {
@@ -255,6 +348,13 @@ public class HealthliftingService
 		return athleteRepository.getAthletes(pageable);
 	}
 
+	/**
+	 * Retrieves a paginated list of coaches.
+	 *
+	 * @param pageable the pagination information
+	 * @return a paginated list of coaches
+	 * @throws BusinessException if the pagination size exceeds the maximum allowed
+	 */
 	@Override
 	@Transactional
 	public Page<Coach> getCoaches(@Valid Pageable pageable) throws BusinessException {
@@ -267,6 +367,13 @@ public class HealthliftingService
 		return coachRepository.getCoaches(pageable);
 	}
 
+	/**
+	 * Retrieves a paginated list of appointments.
+	 *
+	 * @param pageable the pagination information
+	 * @return a paginated list of appointments
+	 * @throws BusinessException if the pagination size exceeds the maximum allowed
+	 */
 	@Override
 	@Transactional
 	public Page<Appointment> getAppointments(@Valid Pageable pageable) throws BusinessException {
@@ -279,6 +386,12 @@ public class HealthliftingService
 		return appointmentRepository.getAppointments(pageable);
 	}
 
+	/**
+	 * Partially updates an athlete's information.
+	 *
+	 * @param inputAthlete the athlete with updated information
+	 * @throws BusinessException if the athlete is not found
+	 */
 	@Override
 	@Transactional
 	public void modificationPartialAthlete(@Valid Athlete inputAthlete) throws BusinessException {
@@ -296,6 +409,12 @@ public class HealthliftingService
 
 	}
 
+	/**
+	 * Partially updates a coach's information.
+	 *
+	 * @param inputCoach the coach with updated information
+	 * @throws BusinessException if the coach is not found
+	 */
 	@Override
 	@Transactional
 	public void modificationPartialCoach(@Valid Coach inputCoach) throws BusinessException {
@@ -313,6 +432,12 @@ public class HealthliftingService
 
 	}
 
+	/**
+	 * Partially updates an appointment's information.
+	 *
+	 * @param inputAppointment the appointment with updated information
+	 * @throws BusinessException if the appointment is not found
+	 */
 	@Override
 	@Transactional
 	public void modificationPartialAppointment(@Valid Appointment inputAppointment) throws BusinessException {
@@ -330,6 +455,12 @@ public class HealthliftingService
 
 	}
 
+	/**
+	 * Fully updates an athlete's information.
+	 *
+	 * @param inputAthlete the athlete with updated information
+	 * @throws BusinessException if the athlete is not found
+	 */
 	@Override
 	@Transactional
 	public void modificationTotalAthlete(@Valid Athlete inputAthlete) throws BusinessException {
@@ -344,6 +475,12 @@ public class HealthliftingService
 
 	}
 
+	/**
+	 * Fully updates a coach's information.
+	 *
+	 * @param inputCoach the coach with updated information
+	 * @throws BusinessException if the coach is not found
+	 */
 	@Override
 	@Transactional
 	public void modificationTotalCoach(@Valid Coach inputCoach) throws BusinessException {
@@ -358,6 +495,12 @@ public class HealthliftingService
 
 	}
 
+	/**
+	 * Fully updates an appointment's information.
+	 *
+	 * @param inputAppointment the appointment with updated information
+	 * @throws BusinessException if the appointment is not found
+	 */
 	@Override
 	@Transactional
 	public void modificationTotalAppointment(@Valid Appointment inputAppointment) throws BusinessException {
@@ -372,6 +515,12 @@ public class HealthliftingService
 
 	}
 
+	/**
+	 * Deletes an athlete by ID.
+	 *
+	 * @param idAthlete the ID of the athlete to be deleted
+	 * @throws BusinessException if the athlete is not found
+	 */
 	@Override
 	@Transactional
 	public void deleteAthlete(@Valid String idAthlete) throws BusinessException {
@@ -386,6 +535,12 @@ public class HealthliftingService
 
 	}
 
+	/**
+	 * Deletes a coach by ID.
+	 *
+	 * @param idCoach the ID of the coach to be deleted
+	 * @throws BusinessException if the coach is not found
+	 */
 	@Override
 	@Transactional
 	public void deleteCoach(@Valid String idCoach) throws BusinessException {
@@ -400,6 +555,12 @@ public class HealthliftingService
 
 	}
 
+	/**
+	 * Deletes an appointment by ID.
+	 *
+	 * @param idAppointment the ID of the appointment to be deleted
+	 * @throws BusinessException if the appointment is not found
+	 */
 	@Override
 	@Transactional
 	public void deleteAppointment(@Valid String idAppointment) throws BusinessException {

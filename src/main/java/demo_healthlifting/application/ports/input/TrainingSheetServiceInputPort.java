@@ -16,6 +16,11 @@ public interface TrainingSheetServiceInputPort {
 
 	Page<TrainingSheet> getTrainingSheets(@Valid Pageable pageable) throws BusinessException;
 
+	Page<TrainingSheet> getTrainingSheetsByAthleteId(@Valid String athleteId, Pageable pageable)
+			throws BusinessException;
+
+	Page<TrainingSheet> getTrainingSheetsByCoachId(@Valid String coachId, Pageable pageable) throws BusinessException;
+
 	void modificationPartialTrainingSheet(@Valid TrainingSheet inputTrainingSheet) throws BusinessException;
 
 	void modificationTotalTrainingSheet(@Valid TrainingSheet inputTrainingSheet) throws BusinessException;

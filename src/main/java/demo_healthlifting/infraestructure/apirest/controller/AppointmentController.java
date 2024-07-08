@@ -1,6 +1,5 @@
 package demo_healthlifting.infraestructure.apirest.controller;
 
-import java.net.URI;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +16,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import demo_healthlifting.application.ports.input.AppointmentServiceInputPort;
 import demo_healthlifting.domain.exception.BusinessException;
@@ -51,9 +49,9 @@ public class AppointmentController {
 	AppointmentToAppointmentDtoMapper appointmentToAppointmentDtoMapper;
 
 	/**
-	 * Receive a list of all appointments
+	 * Receive a list of all appointments.
 	 * 
-	 * @param pageable the information
+	 * @param pageable the pagination information
 	 * @return response entity with the list of appointments
 	 */
 	@GetMapping
@@ -89,6 +87,13 @@ public class AppointmentController {
 		}
 	}
 
+	/**
+	 * Retrieve a list of appointments by coach document.
+	 * 
+	 * @param document the document of the coach
+	 * @param pageable the pagination information
+	 * @return response entity with the list of appointments
+	 */
 	@GetMapping("/coaches/searchByDocument")
 	public ResponseEntity getAppointmentsByCoachDocument(@RequestParam String document, Pageable pageable) {
 
@@ -103,6 +108,13 @@ public class AppointmentController {
 
 	}
 
+	/**
+	 * Retrieve a list of appointments by athlete document.
+	 * 
+	 * @param document the document of the athlete
+	 * @param pageable the pagination information
+	 * @return response entity with the list of appointments
+	 */
 	@GetMapping("/athletes/searchByDocument")
 	public ResponseEntity getAppointmentsByAthleteDocument(@RequestParam String document, Pageable pageable) {
 
@@ -118,8 +130,15 @@ public class AppointmentController {
 
 	}
 
+	/**
+	 * Retrieve a list of appointments by coach ID.
+	 * 
+	 * @param id       the ID of the coach
+	 * @param pageable the pagination information
+	 * @return response entity with the list of appointments
+	 */
 	@GetMapping("/coaches/{id}")
-	public ResponseEntity getAppointmentsByCoachId(@PathVariable("id") String id, Pageable pageable) {
+	public ResponseEntity getAppointmentsByCoachId(@PathVariable String id, Pageable pageable) {
 		try {
 			Page<Appointment> coachAppointments = appointmentService.getAppointmentsByCoachId(id, pageable);
 			log.debug("Retrieved appointments: {}", coachAppointments.getContent());
@@ -130,8 +149,15 @@ public class AppointmentController {
 		}
 	}
 
+	/**
+	 * Retrieve a list of appointments by athlete ID.
+	 * 
+	 * @param id       the ID of the athlete
+	 * @param pageable the pagination information
+	 * @return response entity with the list of appointments
+	 */
 	@GetMapping("/athletes/{id}")
-	public ResponseEntity getAppointmentsByAthleteId(@PathVariable("id") String id, Pageable pageable) {
+	public ResponseEntity getAppointmentsByAthleteId(@PathVariable String id, Pageable pageable) {
 		try {
 			Page<Appointment> athletesAppointments = appointmentService.getAppointmentsByAthleteId(id, pageable);
 			log.debug("Retrieved appointments: {}", athletesAppointments.getContent());
@@ -145,8 +171,8 @@ public class AppointmentController {
 	/**
 	 * post/create a new appointment
 	 * 
-	 * @param appointmentDto
-	 * @return response entity with creation location header
+	 * @param appointmentDto the appointment data transfer object
+	 * @return response entity with the created appointment information
 	 */
 	@PostMapping
 	public ResponseEntity postAppointment(@RequestBody @Valid PostPutAppointmentDto appointmentDto) {
@@ -172,11 +198,11 @@ public class AppointmentController {
 	}
 
 	/**
-	 * Partially modifies an appointment
+	 * Partially modifies an appointment.
 	 * 
-	 * @param id  of appointment ID
-	 * @param dto of appointment DTO
-	 * @return response entity with the result of the method
+	 * @param id  the ID of the appointment
+	 * @param dto the appointment data transfer object
+	 * @return response entity with the result of the operation
 	 */
 	@PatchMapping("/{appointmentId}")
 	public ResponseEntity patchAppointment(@PathVariable("appointmentId") String id,
@@ -195,10 +221,10 @@ public class AppointmentController {
 	}
 
 	/**
-	 * Deletes an existent appointment by ID
+	 * Deletes an existent appointment by ID.
 	 * 
-	 * @param id of the appointment
-	 * @return response entity with the result of the method
+	 * @param id the ID of the appointment
+	 * @return response entity with the result of the operation
 	 * @throws BusinessException if there is an error deleting the appointment
 	 */
 	@DeleteMapping("/{appointmentId}")
@@ -216,7 +242,4 @@ public class AppointmentController {
 		return ResponseEntity.noContent().build();
 	}
 
-	private URI createUri(String id) {
-		return ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(id).toUri();
-	}
 }

@@ -19,7 +19,19 @@ public class TrainingSheet {
 
 	private String coachId;
 
+	private String coachName;
+
+	private String coachSurname;
+
+	private String coachDocument;
+
 	private String athleteId;
+
+	private String athleteName;
+
+	private String athleteSurname;
+
+	private String athleteDocument;
 
 	private String appointmentId;
 

@@ -20,15 +20,27 @@ public class TrainingSheetEntity {
 	@Id
 	String id;
 
-	TrainingTypeRecord trainingTypeRecord;
+	private TrainingTypeRecord trainingTypeRecord;
 
-	String observations;
+	private String observations;
 
-	String coachId;
+	private String coachId;
 
-	String athleteId;
+	private String coachName;
 
-	String appointmentId;
+	private String coachSurname;
+
+	private String coachDocument;
+
+	private String athleteId;
+
+	private String athleteName;
+
+	private String athleteSurname;
+
+	private String athleteDocument;
+
+	private String appointmentId;
 
 	boolean eliminate;
 

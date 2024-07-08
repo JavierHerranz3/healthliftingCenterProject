@@ -21,6 +21,7 @@ import demo_healthlifting.infraestructure.database.mapper.AppointmentToAppointme
 import demo_healthlifting.infraestructure.database.repository.AppointmentRepository;
 import demo_healthlifting.infraestructure.database.repository.AthleteRepository;
 import demo_healthlifting.infraestructure.database.repository.CoachRepository;
+import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 
@@ -107,12 +108,13 @@ public class AppointmentRepositoryService implements AppointmentRepositoryOutput
 		Optional<CoachEntity> coachOpt = coachRepository.findByPersonalInformationDocumentAndEliminate(document, false);
 		CoachEntity coach = coachOpt.get();
 		List<String> appointmentIds = coach.getIdAppointments();
-		Page<AppointmentEntity> appointmentEntities = appointmentRepository.findByEliminateAndIdIn(false,
-				appointmentIds, pageable);
+		Page<AppointmentEntity> appointmentEntities = appointmentRepository.findByIdInAndEliminate(appointmentIds,
+				false, pageable);
 		return appointmentEntities.map(appointmentToAppointmentEntityMapper::fromOutputToInput);
 	}
 
 	@Override
+	@Cacheable(value = "appointments", key = "#document")
 	public Page<Appointment> getAppointmentsByAthletePersonalInformationDocument(String document, Pageable pageable) {
 		log.debug("getAppointmentsByAthletePersonalInformationDocument");
 
@@ -120,22 +122,25 @@ public class AppointmentRepositoryService implements AppointmentRepositoryOutput
 				false);
 		AthleteEntity athlete = athleteOpt.get();
 		List<String> appointmentIds = athlete.getIdAppointments();
-		Page<AppointmentEntity> appointmentEntities = appointmentRepository.findByEliminateAndIdIn(false,
+		Page<AppointmentEntity> appointmentEntities = appointmentRepository.findAthleteByEliminateAndIdIn(false,
 				appointmentIds, pageable);
 		return appointmentEntities.map(appointmentToAppointmentEntityMapper::fromOutputToInput);
 	}
 
 	@Override
-	@Cacheable(value = "appointments", key = "#id")
-	public Page<Appointment> getAppointmentsByCoachId(String id, Pageable pageable) throws BusinessException {
+	@Transactional
+	@Cacheable(value = "appointments", key = "#coachId")
+	public Page<Appointment> getAppointmentsByCoachId(String coachId, Pageable pageable) throws BusinessException {
 		log.debug("getAppointmentsByCoachId");
 
-		Optional<CoachEntity> coachOpt = coachRepository.findByIdAndEliminate(id, false);
+		log.debug("getAppointmentsByCoachId");
+
+		Optional<CoachEntity> coachOpt = coachRepository.findByIdAndEliminate(coachId, false);
 		if (coachOpt.isPresent()) {
 			CoachEntity coach = coachOpt.get();
 			List<String> appointmentIds = coach.getIdAppointments();
-			Page<AppointmentEntity> appointmentEntities = appointmentRepository.findByEliminateAndIdIn(false,
-					appointmentIds, pageable);
+			Page<AppointmentEntity> appointmentEntities = appointmentRepository.findByIdInAndEliminate(appointmentIds,
+					false, pageable);
 			return appointmentEntities.map(appointmentToAppointmentEntityMapper::fromOutputToInput);
 		} else {
 			throw new BusinessException(Errors.PERSON_NOT_FOUND);
@@ -151,7 +156,7 @@ public class AppointmentRepositoryService implements AppointmentRepositoryOutput
 		if (athleteOpt.isPresent()) {
 			AthleteEntity athlete = athleteOpt.get();
 			List<String> appointmentIds = athlete.getIdAppointments();
-			Page<AppointmentEntity> appointmentEntities = appointmentRepository.findByEliminateAndIdIn(false,
+			Page<AppointmentEntity> appointmentEntities = appointmentRepository.findAthleteByEliminateAndIdIn(false,
 					appointmentIds, pageable);
 			return appointmentEntities.map(appointmentToAppointmentEntityMapper::fromOutputToInput);
 		} else {

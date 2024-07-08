@@ -1,5 +1,6 @@
 package demo_healthlifting.infraestructure.database.repository;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.domain.Page;
@@ -18,5 +19,9 @@ public interface TrainingSheetRepository extends MongoRepository<TrainingSheetEn
 	Page<TrainingSheetEntity> findByEliminate(boolean eliminate, @Valid Pageable pageable);
 
 	Optional<TrainingSheetEntity> findByIdAndEliminate(@Valid String id, boolean eliminate);
+
+	Page<TrainingSheetEntity> findByIdInAndEliminate(List<String> trainingSheetsIds, boolean b, Pageable pageable);
+
+	Page<TrainingSheetEntity> findByAthleteIdAndEliminateFalse(String id, Pageable pageable);
 
 }

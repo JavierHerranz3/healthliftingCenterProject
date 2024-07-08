@@ -27,6 +27,12 @@ public class CoachRepositoryService implements CoachRepositoryOutputPort {
 	@Autowired
 	CoachToCoachEntityMapper coachToCoachEntityMapper;
 
+	/**
+	 * Creates a new coach and evicts all entries in the "coaches" cache.
+	 *
+	 * @param input the coach to be created
+	 * @return the ID of the newly created coach
+	 */
 	@Override
 	@CacheEvict(value = "coaches", allEntries = true)
 	public String createCoach(@Valid Coach input) {
@@ -35,6 +41,13 @@ public class CoachRepositoryService implements CoachRepositoryOutputPort {
 		return coachRepository.save(entity).getId();
 	}
 
+	/**
+	 * Retrieves a coach by ID and caches the result.
+	 *
+	 * @param id the ID of the coach to be retrieved
+	 * @return an Optional containing the coach if found, or an empty Optional if
+	 *         not
+	 */
 	@Override
 	@Cacheable(value = "coaches", key = "#id")
 	public Optional<Coach> getCoach(@Valid String id) {
@@ -44,6 +57,12 @@ public class CoachRepositoryService implements CoachRepositoryOutputPort {
 		return coachToCoachEntityMapper.fromOutputToInput(resourceEntity);
 	}
 
+	/**
+	 * Retrieves a paginated list of coaches and caches the result.
+	 *
+	 * @param pageable the pagination information
+	 * @return a paginated list of coaches
+	 */
 	@Override
 	@Cacheable(value = "coaches", key = "#pageable")
 	public Page<Coach> getCoaches(@Valid Pageable pageable) {
@@ -52,6 +71,11 @@ public class CoachRepositoryService implements CoachRepositoryOutputPort {
 		return coachToCoachEntityMapper.fromOutputToInput(listEntity);
 	}
 
+	/**
+	 * Modifies an existing coach and evicts all entries in the "coaches" cache.
+	 *
+	 * @param input the coach with updated information
+	 */
 	@Override
 	@CacheEvict(value = "coaches", allEntries = true)
 	public void modifyCoach(@Valid Coach input) {
@@ -61,6 +85,12 @@ public class CoachRepositoryService implements CoachRepositoryOutputPort {
 
 	}
 
+	/**
+	 * Deletes a coach by marking them as eliminated and evicts all entries in the
+	 * "coaches" cache.
+	 *
+	 * @param idCoach the ID of the coach to be deleted
+	 */
 	@Override
 	@CacheEvict(value = "coaches", allEntries = true)
 	public void deleteCoach(@Valid String idCoach) {
@@ -73,6 +103,13 @@ public class CoachRepositoryService implements CoachRepositoryOutputPort {
 
 	}
 
+	/**
+	 * Retrieves a coach by ID, excluding eliminated coaches, and caches the result.
+	 *
+	 * @param id the ID of the coach to be retrieved
+	 * @return an Optional containing the coach if found, or an empty Optional if
+	 *         not
+	 */
 	@Override
 	@Cacheable(value = "coach", key = "#id")
 	public Optional<Coach> getCoachById(@Valid String id) {
@@ -81,6 +118,14 @@ public class CoachRepositoryService implements CoachRepositoryOutputPort {
 		return coachToCoachEntityMapper.fromOutputToInput(coachEntity);
 	}
 
+	/**
+	 * Finds a coach by their personal information document, excluding eliminated
+	 * coaches, and caches the result.
+	 *
+	 * @param document the document of the coach to be found
+	 * @return an Optional containing the coach if found, or an empty Optional if
+	 *         not
+	 */
 	@Override
 	@Cacheable(value = "coaches", key = "#document")
 	public Optional<Coach> findByCoachPersonalInformationDocument(@Valid String document) {

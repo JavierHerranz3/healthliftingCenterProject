@@ -15,16 +15,26 @@ import lombok.extern.jackson.Jacksonized;
 @AllArgsConstructor
 public class PostPutTrainingSheetDto {
 	@NotNull
-	TrainingTypeRecord trainingTypeRecord;
+	private TrainingTypeRecord trainingTypeRecord;
 
-	String trainingType;
+	private String observations;
 
-	String observations;
+	private String coachId;
 
-	String coachId;
+	private String coachName;
 
-	String athleteId;
+	private String coachSurname;
 
-	String appointmentId;
+	private String coachDocument;
+
+	private String athleteId;
+
+	private String athleteName;
+
+	private String athleteSurname;
+
+	private String athleteDocument;
+
+	private String appointmentId;
 
 }

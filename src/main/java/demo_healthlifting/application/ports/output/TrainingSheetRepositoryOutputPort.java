@@ -5,6 +5,7 @@ import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import demo_healthlifting.domain.exception.BusinessException;
 import demo_healthlifting.domain.model.TrainingSheet;
 import jakarta.validation.Valid;
 
@@ -18,5 +19,9 @@ public interface TrainingSheetRepositoryOutputPort {
 	void modifyTrainingSheet(@Valid TrainingSheet updated);
 
 	void deleteTrainingSheet(@Valid String idTrainingSheet);
+
+	Page<TrainingSheet> getTrainingSheetsByAthleteId(String id, Pageable pageable) throws BusinessException;
+
+	Page<TrainingSheet> getTrainingSheetsByCoachId(String id, Pageable pageable) throws BusinessException;
 
 }
