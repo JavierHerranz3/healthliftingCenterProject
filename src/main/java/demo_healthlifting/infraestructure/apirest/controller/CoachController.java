@@ -49,6 +49,12 @@ public class CoachController {
 	@Autowired
 	CoachToCoachDtoMapper coachToCoachDtoMapper;
 
+	/**
+	 * Receive a list of all coaches.
+	 * 
+	 * @param pageable the pagination information
+	 * @return response entity with the list of coaches
+	 */
 	@GetMapping
 	public ResponseEntity getCoaches(Pageable pageable) {
 		log.debug("getCoaches");
@@ -63,6 +69,12 @@ public class CoachController {
 		return ResponseEntity.ok(coachToCoachDtoMapper.fromInputToOutput(listDomain));
 	}
 
+	/**
+	 * Receive an coach by its ID
+	 * 
+	 * @param id of the coachID
+	 * @return response entity with the coach
+	 */
 	@GetMapping("/{coachId}")
 	public ResponseEntity getCoach(@PathVariable("coachId") String idCoach) {
 		log.debug("getCoach");
@@ -77,6 +89,13 @@ public class CoachController {
 		}
 	}
 
+	/**
+	 * Retrieve an coach by coach document.
+	 * 
+	 * @param document the document of the coach
+	 *
+	 * @return response entity with the coach
+	 */
 	@GetMapping("/list/{document}")
 	public ResponseEntity getCoachDocument(@PathVariable("document") String document) {
 		log.debug("getCoachDocument");
@@ -88,6 +107,12 @@ public class CoachController {
 		}
 	}
 
+	/**
+	 * post/create a new coach
+	 * 
+	 * @param coachDto the coach data transfer object
+	 * @return response entity with the created coach information
+	 */
 	@PostMapping
 	public ResponseEntity postCoach(@RequestBody PostPutCoachDto coachDto) {
 		log.debug("postCoach");
@@ -104,6 +129,13 @@ public class CoachController {
 		return ResponseEntity.ok(response);
 	}
 
+	/**
+	 * Partially modifies a coach.
+	 * 
+	 * @param id  the ID of the coach
+	 * @param dto the coach data transfer object
+	 * @return response entity with the result of the operation
+	 */
 	@PatchMapping("/{coachId}")
 	public ResponseEntity patchCoach(@PathVariable("coachId") String id, @RequestBody PatchCoachDto dto) {
 		log.debug("patchCoach");
@@ -120,6 +152,13 @@ public class CoachController {
 		return ResponseEntity.noContent().build();
 	}
 
+	/**
+	 * Deletes an existent coach by ID.
+	 * 
+	 * @param id the ID of the coach
+	 * @return response entity with the result of the operation
+	 * @throws BusinessException if there is an error deleting the appointment
+	 */
 	@DeleteMapping("/{coachId}")
 	public ResponseEntity deleteCoach(@Valid @PathVariable("coachId") String id) throws BusinessException {
 

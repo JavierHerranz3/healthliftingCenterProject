@@ -50,6 +50,12 @@ public class AthleteController {
 	@Autowired
 	AthleteToAthleteDtoMapper athleteToAthleteDtoMapper;
 
+	/**
+	 * Receive a list of all athletes.
+	 * 
+	 * @param pageable the pagination information
+	 * @return response entity with the list of athletes
+	 */
 	@GetMapping
 	public ResponseEntity getAthletes(Pageable pageable) {
 		log.debug("getAthletes");
@@ -64,6 +70,12 @@ public class AthleteController {
 		return ResponseEntity.ok(athleteToAthleteDtoMapper.fromInputToOutput(listDomain));
 	}
 
+	/**
+	 * Receive an athlete by its ID
+	 * 
+	 * @param id of the athletetID
+	 * @return response entity with the athlete
+	 */
 	@GetMapping("/{athleteId}")
 	public ResponseEntity getAthlete(@PathVariable("athleteId") String idAhtlete) {
 		log.debug("getAthlete");
@@ -78,6 +90,13 @@ public class AthleteController {
 		}
 	}
 
+	/**
+	 * Retrieve an athlete by athlete document.
+	 * 
+	 * @param document the document of the athlete
+	 *
+	 * @return response entity with the athlete
+	 */
 	@GetMapping("/list/{document}")
 	public ResponseEntity getAthleteByDocument(@PathVariable("document") String document) {
 		log.debug("getAthleteDocument");
@@ -89,6 +108,12 @@ public class AthleteController {
 		}
 	}
 
+	/**
+	 * post/create a new athlete
+	 * 
+	 * @param aathleteDto the athlete data transfer object
+	 * @return response entity with the created athlete information
+	 */
 	@PostMapping
 	public ResponseEntity postAthlete(@Valid @RequestBody PostPutAthleteDto athleteDto) throws BusinessException {
 		log.debug("postAthlete");
@@ -103,6 +128,13 @@ public class AthleteController {
 		return ResponseEntity.ok(response);
 	}
 
+	/**
+	 * Partially modifies an athlete.
+	 * 
+	 * @param id  the ID of the athlete
+	 * @param dto the athlete data transfer object
+	 * @return response entity with the result of the operation
+	 */
 	@PatchMapping("/{athleteDetailId}")
 	public ResponseEntity patchAthlete(@PathVariable("athleteDetailId") String id, @RequestBody PatchAthleteDto dto) {
 		log.debug("patchAthlete");
@@ -119,6 +151,13 @@ public class AthleteController {
 
 	}
 
+	/**
+	 * Deletes an existent athlete by ID.
+	 * 
+	 * @param id the ID of the athlete
+	 * @return response entity with the result of the operation
+	 * @throws BusinessException if there is an error deleting the appointment
+	 */
 	@DeleteMapping("/{athleteId}")
 	public ResponseEntity deleteAthlete(@Valid @PathVariable("athleteId") String id) throws BusinessException {
 

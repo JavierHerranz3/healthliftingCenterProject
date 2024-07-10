@@ -50,6 +50,12 @@ public class TrainingSheetController {
 	@Autowired
 	TrainingSheetToTrainingSheetDtoMapper trainingSheetToTrainingSheetDtoMapper;
 
+	/**
+	 * post/create a new trainingsheet
+	 * 
+	 * @param trainingsheetDto the trainingsheet data transfer object
+	 * @return response entity with the created trainingsheet information
+	 */
 	@PostMapping
 	public ResponseEntity postTrainingSheet(@RequestBody PostPutTrainingSheetDto trainingSheetDto)
 			throws BusinessException {
@@ -65,6 +71,12 @@ public class TrainingSheetController {
 		return ResponseEntity.ok(response);
 	}
 
+	/**
+	 * Receive an trainingSheet by its ID
+	 * 
+	 * @param id of the trainingSheetID
+	 * @return response entity with the trainingSheet
+	 */
 	@GetMapping("/{trainingSheetId}")
 	public ResponseEntity getTrainingSheet(@PathVariable("trainingSheetId") String id) {
 		log.debug("getTrainingSheet");
@@ -79,6 +91,12 @@ public class TrainingSheetController {
 		}
 	}
 
+	/**
+	 * Receive a trainingSheet by athlete's ID
+	 * 
+	 * @param id of the athletetID pageable
+	 * @return response entity with the trainingsheets of the athlete
+	 */
 	@GetMapping("/athletes/{athleteId}")
 	public ResponseEntity getTrainingSheetsByAthleteId(@PathVariable String athleteId, Pageable pageable) {
 		try {
@@ -99,6 +117,12 @@ public class TrainingSheetController {
 		}
 	}
 
+	/**
+	 * Receive a list of all trainingSheets.
+	 * 
+	 * @param pageable the pagination information
+	 * @return response entity with the list of trainingSheets
+	 */
 	@GetMapping
 	public ResponseEntity getTrainingSheets(Pageable pageable) {
 		log.debug("getTrainingSheets");
@@ -113,6 +137,13 @@ public class TrainingSheetController {
 		return ResponseEntity.ok(trainingSheetToTrainingSheetDtoMapper.fromInputToOutput(listDomain));
 	}
 
+	/**
+	 * Partially modifies a trainingSheet.
+	 * 
+	 * @param id  the ID of the trainingSheet
+	 * @param dto the trainingSheet data transfer object
+	 * @return response entity with the result of the operation
+	 */
 	@PatchMapping("/{trainingSheetId}")
 	public ResponseEntity patchTrainingSheet(@PathVariable("trainingSheetId") String id,
 			@RequestBody PatchTrainingSheetDto dto) {
@@ -130,6 +161,13 @@ public class TrainingSheetController {
 		return ResponseEntity.noContent().build();
 	}
 
+	/**
+	 * Deletes an existent trainingSheet by ID.
+	 * 
+	 * @param id the ID of the trainingSheet
+	 * @return response entity with the result of the operation
+	 * @throws BusinessException if there is an error deleting the appointment
+	 */
 	@DeleteMapping("/{trainingSheetId}")
 	public ResponseEntity deleteTrainingSheet(@Valid @PathVariable("trainingSheetId") String id)
 			throws BusinessException {
