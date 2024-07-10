@@ -41,6 +41,13 @@ public class AppointmentRepositoryService implements AppointmentRepositoryOutput
 	@Autowired
 	AppointmentToAppointmentEntityMapper appointmentToAppointmentEntityMapper;
 
+	/**
+	 * Creates a new appointmentt and evicts all entries in the "tappointment"
+	 * cache.
+	 *
+	 * @param appointmentt the appointment to be created
+	 * @return the newly created training sheet
+	 */
 	@Override
 	@CacheEvict(value = "appointments", allEntries = true)
 	public Appointment createAppointment(@Valid Appointment appointment) {
@@ -51,6 +58,13 @@ public class AppointmentRepositoryService implements AppointmentRepositoryOutput
 		return appointmentToAppointmentEntityMapper.fromOutputToInput(savedAppointmentEntity);
 	}
 
+	/**
+	 * Retrieves an appointment by ID and caches the result.
+	 *
+	 * @param id the ID of the appointment to be retrieved
+	 * @return an Optional containing the appointment if found, or an empty Optional
+	 *         if not
+	 */
 	@Override
 	@Cacheable(value = "appointments", key = "#id")
 	public Optional<Appointment> getAppointment(@Valid String id) {
@@ -60,6 +74,12 @@ public class AppointmentRepositoryService implements AppointmentRepositoryOutput
 		return appointmentToAppointmentEntityMapper.fromOutputToInput(resourceEntity);
 	}
 
+	/**
+	 * Retrieves a paginated list of appointments and caches the result.
+	 *
+	 * @param pageable the pagination information
+	 * @return a paginated list of appointments
+	 */
 	@Override
 	@Cacheable(value = "appointments", key = "#pageable")
 	public Page<Appointment> getAppointments(@Valid Pageable pageable) {
@@ -68,6 +88,12 @@ public class AppointmentRepositoryService implements AppointmentRepositoryOutput
 		return appointmentToAppointmentEntityMapper.fromOutputToInput(listEntity);
 	}
 
+	/**
+	 * Modifies an existing appointment and evicts all entries in the "appointment"
+	 * cache.
+	 *
+	 * @param updated the appointment with updated information
+	 */
 	@Override
 	@CacheEvict(value = "appointments", allEntries = true)
 	public void modifyAppointment(@Valid Appointment input) {
@@ -77,6 +103,12 @@ public class AppointmentRepositoryService implements AppointmentRepositoryOutput
 
 	}
 
+	/**
+	 * Deletes an appointment by marking it as eliminated and evicts all entries in
+	 * the "appointment" cache.
+	 *
+	 * @param id the ID of the appointment to be deleted
+	 */
 	@Override
 	@CacheEvict(value = "appointments", allEntries = true)
 	public void deleteAppointment(@Valid String idAppointment) {
@@ -100,6 +132,15 @@ public class AppointmentRepositoryService implements AppointmentRepositoryOutput
 		return appointmentToAppointmentEntityMapper.fromOutputToInput(savedAppointmentEntity);
 	}
 
+	/**
+	 * Retrieves a paginated list of apointments by document and caches the result.
+	 *
+	 * @param document the document of the coach
+	 * @param pageable the pagination information
+	 * @return a paginated list of apointments
+	 * @throws BusinessException if no apointments are found for the coach or the
+	 *                           coach is not found
+	 */
 	@Override
 	@Cacheable(value = "appointments", key = "#document")
 	public Page<Appointment> getAppointmentsByCoachPersonalInformationDocument(String document, Pageable pageable) {
@@ -113,6 +154,15 @@ public class AppointmentRepositoryService implements AppointmentRepositoryOutput
 		return appointmentEntities.map(appointmentToAppointmentEntityMapper::fromOutputToInput);
 	}
 
+	/**
+	 * Retrieves a paginated list of apointments by document and caches the result.
+	 *
+	 * @param document the document of the athlete
+	 * @param pageable the pagination information
+	 * @return a paginated list of apointments
+	 * @throws BusinessException if no apointments are found for the athlete or the
+	 *                           athlete is not found
+	 */
 	@Override
 	@Cacheable(value = "appointments", key = "#document")
 	public Page<Appointment> getAppointmentsByAthletePersonalInformationDocument(String document, Pageable pageable) {
@@ -127,6 +177,15 @@ public class AppointmentRepositoryService implements AppointmentRepositoryOutput
 		return appointmentEntities.map(appointmentToAppointmentEntityMapper::fromOutputToInput);
 	}
 
+	/**
+	 * Retrieves a paginated list of appointments by coach ID and caches the result.
+	 *
+	 * @param id       the ID of the coach
+	 * @param pageable the pagination information
+	 * @return a paginated list of appointments
+	 * @throws BusinessException if no appointments are found for the coach or the
+	 *                           coach is not found
+	 */
 	@Override
 	@Transactional
 	@Cacheable(value = "appointments", key = "#coachId")
@@ -147,6 +206,16 @@ public class AppointmentRepositoryService implements AppointmentRepositoryOutput
 		}
 	}
 
+	/**
+	 * Retrieves a paginated list of appointments by athlete ID and caches the
+	 * result.
+	 *
+	 * @param id       the ID of the athlete
+	 * @param pageable the pagination information
+	 * @return a paginated list of appointments
+	 * @throws BusinessException if no appointments are found for the athlete or the
+	 *                           athlete is not found
+	 */
 	@Override
 	@Cacheable(value = "appointments", key = "#id")
 	public Page<Appointment> getAppointmentsByAthleteId(String id, Pageable pageable) throws BusinessException {
